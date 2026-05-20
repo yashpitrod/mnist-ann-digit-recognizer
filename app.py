@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
-from tf_keras.models import load_model
+import onnxruntime as ort
 import pandas as pd
 
 st.set_page_config(
@@ -40,7 +40,7 @@ if uploaded_file is not None:
 # Load model once at startup
 @st.cache_resource
 def load_trained_model():
-    return load_model("models/mnist_ann_model.keras")
+    return ort.InferenceSession("models/mnist_ann_model.onnx")
 
 model = load_trained_model()
 
@@ -61,7 +61,7 @@ def predict_digit(image):
     # Flatten
     image_array = image_array.reshape(1, 784)
 
-    prediction = model.predict(image_array, verbose=0)
+    prediction = model.run(None, {"dense_input": image_array.astype("float32")})[0]
 
     predicted_digit = np.argmax(prediction)
 
