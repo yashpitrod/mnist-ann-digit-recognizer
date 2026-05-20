@@ -37,7 +37,12 @@ if uploaded_file is not None:
 
     st.image(image, caption="Uploaded Image", width=200)
 
-model = load_model("models/mnist_ann_model.keras")
+# Load model once at startup
+@st.cache_resource
+def load_trained_model():
+    return load_model("models/mnist_ann_model.keras")
+
+model = load_trained_model()
 
 def predict_digit(image):
 
@@ -56,7 +61,7 @@ def predict_digit(image):
     # Flatten
     image_array = image_array.reshape(1, 784)
 
-    prediction = model.predict(image_array)
+    prediction = model.predict(image_array, verbose=0)
 
     predicted_digit = np.argmax(prediction)
 
