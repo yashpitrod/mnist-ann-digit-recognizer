@@ -61,7 +61,7 @@ def predict_digit(image):
     # Flatten
     image_array = image_array.reshape(1, 784)
 
-    prediction = model.run(None, {"dense_input": image_array.astype("float32")})[0]
+    prediction = model.run(None, {"input_layer_9": image_array.astype("float32")})
 
     predicted_digit = np.argmax(prediction)
 
